@@ -18,4 +18,4 @@ jobs:
           python-version: '3.10'  # Specify your desired Python version
 
       - name: Run Python script
-        run: python hasnode.py
+        run: python hashnode.py
