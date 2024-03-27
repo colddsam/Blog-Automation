@@ -92,7 +92,7 @@ export class GenAi{
     ],
   });
 
-  const result = await chat.sendMessage(`Create a blog post about “${title}” . Write it in a technical tone. Use transition words. Use active voice. Write over 3000 words. The blog post should be in a beginners guide style. Add title and subtitle for each section. It should have a minimum of 7 sections. use code snippets and example as much as possible. Include the following keywords: ${tags.join(',')}. make it in markdown code format.`);
+  const result = await chat.sendMessage(`Create a blog post about “${title}” . Write it in a technical tone. Use transition words. Use active voice. Write over 5000 words. The blog post should be in a beginners guide style. Add title and subtitle for each section. It should have a minimum of 7 sections. use code snippets and example as much as possible also add different tables of stat for better understanding. Include the following keywords: ${tags.join(',')}. make it in markdown code format.`);
     const response = await result.response;
     const reText=await response.text()
     return reText;
