@@ -1,3 +1,6 @@
-data
+.env
+node_modules
+test.js
+test.md
+test.json
 test.py
-test.txt
