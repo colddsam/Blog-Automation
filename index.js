@@ -1,7 +1,7 @@
 import { GenAi } from "./GenAI.js";
 import dotenv from 'dotenv';
 import { Unsplash } from "./UnsplashPhoto.js";
-import { HashNode } from "./hashnode.js";
+import { HashNode } from "./Hashnode.js";
 import jsonData from './topics.json' with {type:'json'}
 
 dotenv.config()
