@@ -29,3 +29,5 @@ jobs:
         ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
         HASHNODE_KEY: ${{ secrets.HASHNODE_KEY }}
         PUBLICATION_ID: ${{ secrets.PUBLICATION_ID }}
+        MEDIUM_KEY: ${{ secrets.MEDIUM_KEY }}
+        MEDIUM_ID: ${{ secrets.MEDIUM_ID }}

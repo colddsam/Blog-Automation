@@ -1,17 +1,31 @@
 import fetch from 'node-fetch';
-import dotenv from 'dotenv'
+import { GenAi } from "./GenAI.js";
+import { Unsplash } from "./UnsplashPhoto.js";
+import jsonData from '../data/topics.json' with {type:'json'}
 
-dotenv.config()
+
 
 export class HashNode{
-    constructor(Authorization, publicationId) {
+    constructor(Authorization, publicationId,GEMINI_KEY,ACCESS_KEY) {
         this.publicationId = publicationId
-        this.graphqlEndpoint = "https://gql.hashnode.com/"
-        this.headers={
+        this.Authorization = Authorization;
+        this.GEMINI_KEY = GEMINI_KEY;
+        this.ACCESS_KEY = ACCESS_KEY;
+    }
+
+    async createPost() {
+        const gentest = new GenAi(this.GEMINI_KEY);
+        const choice = await gentest.hashnodeTopicSelection();
+        const text = await gentest.markdownMaker(choice['title'], choice['tags'])
+        const unsplash = new Unsplash(this.ACCESS_KEY);
+        const imageUrl = await unsplash.getPhoto(choice['image'])
+        const tags=choice['tags'].filter(i=>i.toLowerCase() in jsonData).map(i=>jsonData[i.toLowerCase()]);
+        const graphqlEndpoint = "https://gql.hashnode.com/"
+        const headers={
             'Content-Type': 'application/json',
-            'Authorization': Authorization
+            'Authorization': this.Authorization
         };
-        this.mutationQuery = `
+        const mutationQuery = `
             mutation PublishPost($input: PublishPostInput!) {
                 publishPost(input: $input) {
                     post {
@@ -22,16 +36,13 @@ export class HashNode{
                     }
                 }
             }`;
-    }
-
-    async createPost(title, subtitle, contentMarkdown, tags, coverImageURL) {
         const mutationVariables = {
             "input": {
-                "title": title,
-                "subtitle": subtitle,
-                "contentMarkdown": contentMarkdown,
+                "title": choice['title'],
+                "subtitle": choice['subtitle'],
+                "contentMarkdown": text,
                 "coverImageOptions": {
-                    "coverImageURL": coverImageURL
+                    "coverImageURL": imageUrl
                 },
                 "tags": tags,
                 "disableComments": false,
@@ -39,10 +50,10 @@ export class HashNode{
             }
         
         };
-        fetch(this.graphqlEndpoint, {
+        fetch(graphqlEndpoint, {
             method: 'POST',
-            headers: this.headers,
-            body: JSON.stringify({ query: this.mutationQuery, variables: mutationVariables })
+            headers: headers,
+            body: JSON.stringify({ query: mutationQuery, variables: mutationVariables })
         })
         .then(response => {
             if (response.ok) {
